@@ -6,13 +6,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import loja.comuns.Usuarios;
 
 
-public class Autenticacao {
+@SuppressWarnings("serial")
+public class Autenticacao implements Serializable {
 
 	private ArrayList<Usuarios> usuarios;
 	private String arquivo = "usuarios.ser";
