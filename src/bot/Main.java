@@ -8,6 +8,8 @@ public class Main {
 
 	public static void main(String[] args) {
 		
+		// TODO fazer login para gerente adicionar mais produtos
+		
 		ApiContextInitializer.init();
 		
 		 TelegramBotsApi botsApi = new TelegramBotsApi();

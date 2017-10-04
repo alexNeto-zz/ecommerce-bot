@@ -8,6 +8,7 @@ public class Produtos {
 	private int quantidade;
 	private String nome;
 	private String descrição;
+	private String categoria;
 	private ArrayList<Comentarios> comentarios;
 	
 	public double getPreco() {
@@ -39,6 +40,12 @@ public class Produtos {
 	}
 	public void setComentarios(ArrayList<Comentarios> comentarios) {
 		this.comentarios = comentarios;
+	}
+	public String getCategoria() {
+		return categoria;
+	}
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
 	}
 	
 	
