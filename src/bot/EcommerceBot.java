@@ -29,9 +29,23 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 		if (update.hasMessage() && update.getMessage().hasText()) {
 			// String message_text = update.getMessage().getText();
 			long chat_id = update.getMessage().getChatId();
+
 			if (update.getMessage().getText().equals("/start")) {
 				SendMessage message = new SendMessage().setChatId(chat_id).setText("Você enviou /start");
 				message.setReplyMarkup(new Menu().principal());
+				try {
+					sendMessage(message); // Sending our message object to user
+				} catch (TelegramApiException e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (update.getMessage().getText().substring(0, 8).equals("/comment")) {
+				SendMessage message = new SendMessage().setChatId(chat_id).setText("Você enviou /comment");
+				if (compra != null) {
+					int i = app.getIndex(compra);
+					app.comentar(i, update.getMessage().getText().substring(8));
+				}
 				try {
 					sendMessage(message); // Sending our message object to user
 				} catch (TelegramApiException e) {
@@ -43,15 +57,16 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 			}
 
 		} else if (update.hasCallbackQuery()) {
-			
+
 			String call_data = update.getCallbackQuery().getData();
 			long message_id = update.getCallbackQuery().getMessage().getMessageId();
 			long chat_id = update.getCallbackQuery().getMessage().getChatId();
-			String answer = "algo";
-			
+			String answer = "";
+
 			if (call_data.equals("ver_produtos")) {
 				answer = "opa! agora escolha uma categoria";
-				SendMessage message = new SendMessage().setChatId(chat_id).setText("Você enviou /start");
+				SendMessage message = new SendMessage().setChatId(chat_id)
+						.setText("/start para voltar a primeira página");
 				message.setReplyMarkup(new Menu().produtos());
 				try {
 					sendMessage(message); // Sending our message object to user
@@ -66,7 +81,7 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 				for (Produtos produto : carrinho.getComprados()) {
 					display.append(produto.getNome()).append("\tR$: ").append(produto.getPreco()).append("\n");
 				}
-						
+				display.append("\n\n").append(carrinho.total());
 				SendMessage message = new SendMessage().setChatId(chat_id).setText(display.toString());
 				try {
 					sendMessage(message); // Sending our message object to user
@@ -104,14 +119,14 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 						display.append(produto.getComentarios());
 					}
 					answer = display.toString();
-					SendMessage message = new SendMessage().setChatId(chat_id)
-							.setText("Todos produtos para essa seleção");
+					SendMessage message = new SendMessage().setChatId(chat_id).setText(answer);
 					message.setReplyMarkup(new Menu().comprar());
 					try {
 						sendMessage(message); // Sending our message object to user
 					} catch (TelegramApiException e) {
 						e.printStackTrace();
 					}
+					break;
 				}
 			}
 

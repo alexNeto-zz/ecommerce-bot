@@ -11,6 +11,14 @@ public class Carrinho implements Serializable{
 	private static final long serialVersionUID = -2945961068642949168L;
 	private ArrayList<Produtos> comprados = new ArrayList<>();
 
+	
+	public double total() {
+		double total = 0;
+		for(Produtos produto: comprados) {
+			total += produto.getPreco();
+		}
+		return total;
+	}
 	public ArrayList<Produtos> getComprados() {
 		return comprados;
 	}

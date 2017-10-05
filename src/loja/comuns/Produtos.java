@@ -15,7 +15,7 @@ public class Produtos implements Serializable {
 	private String nome;
 	private String descrição;
 	private String categoria;
-	private ArrayList<Comentarios> comentarios;
+	private ArrayList<String> comentarios;
 
 	public double getPreco() {
 		return preco;
@@ -57,12 +57,12 @@ public class Produtos implements Serializable {
 		this.descrição = descrição;
 	}
 
-	public ArrayList<Comentarios> getComentarios() {
+	public ArrayList<String> getComentarios() {
 		return comentarios;
 	}
 
-	public void setComentarios(ArrayList<Comentarios> comentarios) {
-		this.comentarios = comentarios;
+	public void setComentarios(String comentario) {
+		this.comentarios.add(comentario);
 	}
 
 	public String getCategoria() {

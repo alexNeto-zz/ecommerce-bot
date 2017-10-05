@@ -142,9 +142,24 @@ public class AppMan implements Serializable {
 		display.append("Relatório de vendas:\n");
 		for (Produtos produto : estoque.getEstoque()) {
 			display.append("Nome: ").append(produto.getNome());
-			display.append("\nQuantidade: ").append(produto.getQuantidade()).append("\tQuantidade Vendida: ").append(produto.getQuantidadeVendas());
+			display.append("\nQuantidade: ").append(produto.getQuantidade()).append("\tQuantidade Vendida: ")
+					.append(produto.getQuantidadeVendas());
 		}
 		System.out.println(display.toString());
+	}
+	
+	public int getIndex(Produtos produto) {
+		int i = 0;
+		for(Produtos prod: estoque.getEstoque()) {
+			if(prod.getNome().equals(produto.getNome()))
+				break;
+			i++;
+		}
+		return i;
+	}
+
+	public void comentar(int i, String comentario) {
+		estoque.getEstoque().get(i).setComentarios(comentario);;
 	}
 
 	public void salvar() {
