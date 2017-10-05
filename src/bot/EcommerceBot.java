@@ -7,12 +7,14 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import loja.comuns.AppMan;
+import loja.comuns.Carrinho;
 import loja.comuns.Menu;
 import loja.comuns.Produtos;
 
 public class EcommerceBot extends TelegramLongPollingBot implements Token {
 
 	private AppMan app = new AppMan();
+	private Carrinho carrinho = new Carrinho();
 
 	@Override
 	public String getBotUsername() {
@@ -45,7 +47,7 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 			long message_id = update.getCallbackQuery().getMessage().getMessageId();
 			long chat_id = update.getCallbackQuery().getMessage().getChatId();
 			String answer = "algo";
-
+			Produtos compra = null;
 			if (call_data.equals("ver_produtos")) {
 				answer = "opa! agora escolha uma categoria";
 				SendMessage message = new SendMessage().setChatId(chat_id).setText("Você enviou /start");
@@ -58,6 +60,13 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 			}
 			if (call_data.equals("ver_carrinho")) {
 				answer = "vendo carrinho lalalala";
+				StringBuilder display = new StringBuilder();
+				for(Produtos produto : carrinho.getComprados()) {
+					display.append(produto.getNome()).append("\tR$: ").append(produto.getPreco());
+					System.out.println(produto.getNome());
+				}
+				answer = display.toString();
+				
 			}
 			if (call_data.equals("arduino")) {
 				answer = "você está vendo arduinos";
@@ -75,12 +84,12 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 				answer = "você está vendo componentes passivos";
 				showCallBack(call_data, chat_id);
 			}
-			int i = 0;
 			for (Produtos produto : app.getEstoque()) {
 				if (call_data.equals(produto.getNome())) {
 					StringBuilder display = new StringBuilder();
 					display.append(produto.getNome()).append("\nR$: ").append(produto.getPreco()).append("\t")
 							.append(produto.getQuantidade()).append(" unidades\n").append(produto.getDescrição()).append("\n\n");
+					compra = produto;
 					if(produto.getComentarios() == null) {
 						display.append("ainda não tem comentários para esse produto, seja o primeiro!");
 					}
@@ -88,8 +97,20 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 						display.append(produto.getComentarios());
 					}
 					answer = display.toString();
+					SendMessage message = new SendMessage().setChatId(chat_id).setText("Todos produtos para essa seleção");
+					message.setReplyMarkup(new Menu().comprar());
+					try {
+						sendMessage(message); // Sending our message object to user
+					} catch (TelegramApiException e) {
+						e.printStackTrace();
+					}
+					
 				}
-				i++;
+			}
+			
+			if(call_data.equals("comprar")) {
+				answer = "item adicionado ao carrinho";
+				carrinho.setComprados(compra);	
 			}
 
 			EditMessageText new_message = new EditMessageText().setChatId(chat_id).setMessageId((int) (message_id))
@@ -99,7 +120,11 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 			} catch (TelegramApiException e) {
 				e.printStackTrace();
 			}
+			
+			
+			
 		}
+		
 	}
 
 	@SuppressWarnings("deprecation")

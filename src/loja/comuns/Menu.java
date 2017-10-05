@@ -8,7 +8,6 @@ import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboar
 
 public class Menu {
 
-	
 	public InlineKeyboardMarkup principal() {
 		InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
 
@@ -59,6 +58,21 @@ public class Menu {
 			}
 			i++;
 		}
+
+		markupInline.setKeyboard(rowsInline);
+		return markupInline;
+	}
+
+	public InlineKeyboardMarkup comprar() {
+		InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
+
+		List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+		List<InlineKeyboardButton> rowInline = new ArrayList<>();
+
+		rowInline.add(new InlineKeyboardButton().setText("Comprar").setCallbackData("comprar"));
+		rowInline.add(new InlineKeyboardButton().setText("Voltar").setCallbackData("ver_produtos"));
+
+		rowsInline.add(rowInline);
 
 		markupInline.setKeyboard(rowsInline);
 		return markupInline;
