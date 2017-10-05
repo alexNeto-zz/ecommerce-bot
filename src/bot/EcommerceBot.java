@@ -43,7 +43,14 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 			String answer = null;
 
 			if (call_data.equals("ver_produtos")) {
-				answer = "vendo produtos lalalala";
+				answer = "vendo produtos lalalala";	
+				SendMessage message = new SendMessage().setChatId(chat_id).setText("Você enviou /start");
+				message.setReplyMarkup(new Menu().produtos());
+				try {
+					sendMessage(message); // Sending our message object to user
+				} catch (TelegramApiException e) {
+					e.printStackTrace();
+				}
 			}
 			if (call_data.equals("ver_carrinho")) {
 				answer = "vendo carrinho lalalala";

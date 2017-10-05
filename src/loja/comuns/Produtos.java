@@ -1,9 +1,14 @@
 package loja.comuns;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Produtos {
+public class Produtos implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7133873416477191881L;
 	private double preco;
 	private int quantidade;
 	private String nome;
