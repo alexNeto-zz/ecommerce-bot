@@ -55,6 +55,14 @@ public class AppMan implements Serializable {
 		return categorias;
 	}
 
+	public ArrayList<Produtos> getEstoque() {
+		return estoque.getEstoque();
+	}
+
+	public void setEstoque(Estoque estoque) {
+		this.estoque = estoque;
+	}
+
 	public String categorias(Scanner scanner) {
 
 		System.out.println("1 - Arduino");
