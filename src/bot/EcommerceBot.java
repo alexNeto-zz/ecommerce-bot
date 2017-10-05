@@ -1,7 +1,6 @@
 package bot;
 
 import org.telegram.telegrambots.api.methods.send.SendMessage;
-import org.telegram.telegrambots.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
@@ -15,6 +14,7 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 
 	private AppMan app = new AppMan();
 	private Carrinho carrinho = new Carrinho();
+	Produtos compra = null;
 
 	@Override
 	public String getBotUsername() {
@@ -43,11 +43,12 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 			}
 
 		} else if (update.hasCallbackQuery()) {
+			
 			String call_data = update.getCallbackQuery().getData();
 			long message_id = update.getCallbackQuery().getMessage().getMessageId();
 			long chat_id = update.getCallbackQuery().getMessage().getChatId();
 			String answer = "algo";
-			Produtos compra = null;
+			
 			if (call_data.equals("ver_produtos")) {
 				answer = "opa! agora escolha uma categoria";
 				SendMessage message = new SendMessage().setChatId(chat_id).setText("Você enviou /start");
@@ -61,12 +62,18 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 			if (call_data.equals("ver_carrinho")) {
 				answer = "vendo carrinho lalalala";
 				StringBuilder display = new StringBuilder();
-				for(Produtos produto : carrinho.getComprados()) {
+				for (Produtos produto : carrinho.getComprados()) {
 					display.append(produto.getNome()).append("\tR$: ").append(produto.getPreco());
 					System.out.println(produto.getNome());
 				}
-				answer = display.toString();
-				
+						
+				SendMessage message = new SendMessage().setChatId(chat_id).setText(display.toString());
+				try {
+					sendMessage(message); // Sending our message object to user
+				} catch (TelegramApiException e) {
+					e.printStackTrace();
+				}
+
 			}
 			if (call_data.equals("arduino")) {
 				answer = "você está vendo arduinos";
@@ -88,43 +95,40 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 				if (call_data.equals(produto.getNome())) {
 					StringBuilder display = new StringBuilder();
 					display.append(produto.getNome()).append("\nR$: ").append(produto.getPreco()).append("\t")
-							.append(produto.getQuantidade()).append(" unidades\n").append(produto.getDescrição()).append("\n\n");
+							.append(produto.getQuantidade()).append(" unidades\n").append(produto.getDescrição())
+							.append("\n\n");
 					compra = produto;
-					if(produto.getComentarios() == null) {
+					if (produto.getComentarios() == null) {
 						display.append("ainda não tem comentários para esse produto, seja o primeiro!");
-					}
-					else {
+					} else {
 						display.append(produto.getComentarios());
 					}
 					answer = display.toString();
-					SendMessage message = new SendMessage().setChatId(chat_id).setText("Todos produtos para essa seleção");
+					SendMessage message = new SendMessage().setChatId(chat_id)
+							.setText("Todos produtos para essa seleção");
 					message.setReplyMarkup(new Menu().comprar());
 					try {
 						sendMessage(message); // Sending our message object to user
 					} catch (TelegramApiException e) {
 						e.printStackTrace();
 					}
-					
 				}
 			}
-			
-			if(call_data.equals("comprar")) {
-				answer = "item adicionado ao carrinho";
-				carrinho.setComprados(compra);	
-			}
 
-			EditMessageText new_message = new EditMessageText().setChatId(chat_id).setMessageId((int) (message_id))
-					.setText(answer);
-			try {
-				editMessageText(new_message);
-			} catch (TelegramApiException e) {
-				e.printStackTrace();
+			if (call_data.equals("comprar")) {
+				answer = "Compra realizada com sucesso";
+				if (compra != null) {
+					carrinho.setComprados(compra);
+					SendMessage message = new SendMessage().setChatId(chat_id).setText("Você enviou /start");
+					message.setReplyMarkup(new Menu().produtos());
+					try {
+						sendMessage(message); // Sending our message object to user
+					} catch (TelegramApiException e) {
+						e.printStackTrace();
+					}
+				}
 			}
-			
-			
-			
 		}
-		
 	}
 
 	@SuppressWarnings("deprecation")
