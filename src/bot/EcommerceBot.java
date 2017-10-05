@@ -62,9 +62,9 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 			if (call_data.equals("ver_carrinho")) {
 				answer = "vendo carrinho lalalala";
 				StringBuilder display = new StringBuilder();
+				display.append("Lista de produtos no carrinho:\n");
 				for (Produtos produto : carrinho.getComprados()) {
-					display.append(produto.getNome()).append("\tR$: ").append(produto.getPreco());
-					System.out.println(produto.getNome());
+					display.append(produto.getNome()).append("\tR$: ").append(produto.getPreco()).append("\n");
 				}
 						
 				SendMessage message = new SendMessage().setChatId(chat_id).setText(display.toString());
@@ -119,6 +119,7 @@ public class EcommerceBot extends TelegramLongPollingBot implements Token {
 				answer = "Compra realizada com sucesso";
 				if (compra != null) {
 					carrinho.setComprados(compra);
+					app.compra(compra);
 					SendMessage message = new SendMessage().setChatId(chat_id).setText("Você enviou /start");
 					message.setReplyMarkup(new Menu().produtos());
 					try {

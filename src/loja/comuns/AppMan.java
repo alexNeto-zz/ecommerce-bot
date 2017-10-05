@@ -18,6 +18,7 @@ public class AppMan implements Serializable {
 	private static final long serialVersionUID = -3918306593880100848L;
 	private Estoque estoque;
 	private String arquivo = "estoque.ser";
+	Scanner scanner = new Scanner(System.in);
 
 	public AppMan() {
 		if (!ler()) {
@@ -35,14 +36,14 @@ public class AppMan implements Serializable {
 		}
 		try (ObjectInputStream importarEstoque = new ObjectInputStream(lerAquivos)) {
 			Object objeto = importarEstoque.readObject();
-			estoque =  (Estoque) objeto;
+			estoque = (Estoque) objeto;
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return true;
 	}
-	
+
 	public ArrayList<String> categorias() {
 		ArrayList<String> categorias = new ArrayList<>();
 
@@ -90,8 +91,19 @@ public class AppMan implements Serializable {
 		}
 	}
 
+	public void compra(Produtos produto) {
+		int i = 0;
+		for (Produtos prod : estoque.getEstoque()) {
+			if (prod.getNome().equals(produto.getNome()))
+				break;
+			i++;
+		}
+		estoque.venda(i);
+
+	}
+
 	public void adicionarProduto() {
-		Scanner scanner = new Scanner(System.in);
+
 		Produtos produto = new Produtos();
 
 		System.out.println("Digite o preço:");
@@ -122,10 +134,19 @@ public class AppMan implements Serializable {
 
 		estoque.setEstoque(produto);
 		salvar();
-		scanner.close();
 
 	}
-	
+
+	public void relatorio() {
+		StringBuilder display = new StringBuilder();
+		display.append("Relatório de vendas:\n");
+		for (Produtos produto : estoque.getEstoque()) {
+			display.append("Nome: ").append(produto.getNome());
+			display.append("\nQuantidade: ").append(produto.getQuantidade()).append("\tQuantidade Vendida: ").append(produto.getQuantidadeVendas());
+		}
+		System.out.println(display.toString());
+	}
+
 	public void salvar() {
 		try (FileOutputStream salvaEstoque = new FileOutputStream(arquivo);
 				ObjectOutputStream salvaConteudo = new ObjectOutputStream(salvaEstoque)) {

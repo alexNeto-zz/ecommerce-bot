@@ -14,6 +14,12 @@ public class Estoque implements Serializable {
 	public ArrayList<Produtos> getEstoque() {
 		return estoque;
 	}
+	
+	public void venda(int i) {
+		if(this.estoque.get(i).getQuantidade() > 0)
+		this.estoque.get(i).menosUm();
+		this.estoque.get(i).maisUm();
+	}
 
 	public void setEstoque(Produtos estoque) {
 		this.estoque.add(estoque);
